@@ -1,5 +1,17 @@
 const yup = require("yup");
+const userModel = require("../modules/userModel");
+
 const validateRegister = async (req, res, next) => {
+  const alreadyRegisteredUser = await userModel.getUser({
+    email: req.body.email,
+  });
+
+  if (alreadyRegisteredUser.length > 0) {
+    return res
+      .status(400)
+      .json({ error: true, message: "this email is already registered" });
+  }
+
   const schema = yup.object().shape({
     name: yup
       .string("name has to be of type string")
