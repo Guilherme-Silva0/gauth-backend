@@ -20,7 +20,13 @@ const createUser = async (user) => {
   return { insertId: resInsert.insertId };
 };
 
-const getUser = async (user) => {
+const checkCode = async (confirmation_code) => {
+  const querySelect = "SELECT * FROM users WHERE confirmation_code=? LIMIT 1";
+  const [resSelect] = await connection.query(querySelect, [confirmation_code]);
+  return resSelect;
+};
+
+const getUserByEmail = async (user) => {
   const querySelect = "SELECT * FROM users WHERE email=?";
   const [resSelect] = await connection.query(querySelect, [user.email]);
   return resSelect;
@@ -51,5 +57,6 @@ const sendEmail = async (confirmation_code, email) => {
 
 module.exports = {
   createUser,
-  getUser,
+  getUserByEmail,
+  checkCode,
 };
