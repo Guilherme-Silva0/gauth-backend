@@ -2,7 +2,7 @@ const yup = require("yup");
 const userModel = require("../modules/userModel");
 
 const validateRegister = async (req, res, next) => {
-  const alreadyRegisteredUser = await userModel.getUser({
+  const alreadyRegisteredUser = await userModel.getUserByEmail({
     email: req.body.email,
   });
 
@@ -40,6 +40,14 @@ const validateRegister = async (req, res, next) => {
   }
 };
 
+const validateCode = async (req, res, next) => {
+  const isValidCode = await userModel.checkCode(req.params.confirmation_code);
+  if (isValidCode.length === 0)
+    return res.status(404).json({ message: "nao emconntrado" });
+  next();
+};
+
 module.exports = {
   validateRegister,
+  validateCode,
 };
