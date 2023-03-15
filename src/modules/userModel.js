@@ -26,6 +26,17 @@ const checkCode = async (confirmation_code) => {
   return resSelect;
 };
 
+const confirmCode = async (confirmation_code) => {
+  const status = "confirmed";
+  const queryUpdate =
+    "UPDATE users SET status_register=? WHERE confirmation_code=?";
+  const [resUpdate] = await connection.query(queryUpdate, [
+    status,
+    confirmation_code,
+  ]);
+  return resUpdate.affectedRows;
+};
+
 const getUserByEmail = async (user) => {
   const querySelect = "SELECT * FROM users WHERE email=?";
   const [resSelect] = await connection.query(querySelect, [user.email]);
@@ -59,4 +70,5 @@ module.exports = {
   createUser,
   getUserByEmail,
   checkCode,
+  confirmCode,
 };
