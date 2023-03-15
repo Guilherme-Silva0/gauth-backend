@@ -1,4 +1,6 @@
 require("dotenv").config();
+const { randomInt } = require("node:crypto");
+const { hash } = require("bcrypt");
 const nodemailer = require("nodemailer");
 const connection = require("./connection");
 const uuidv4 = require("uuid").v4;
@@ -8,16 +10,23 @@ const createUser = async (user) => {
   const status_register = "new";
   const confirmation_code = uuidv4();
   const queryInsert = "INSERT INTO users VALUES(null,?,?,?,?,?)";
+  const encryptedPassword = await encryptPassword(password);
 
   const [resInsert] = await connection.query(queryInsert, [
     name,
     email,
-    password,
+    encryptedPassword,
     status_register,
     confirmation_code,
   ]);
   sendEmail(confirmation_code, email);
   return { insertId: resInsert.insertId };
+};
+
+const encryptPassword = async (password) => {
+  const randomSalt = randomInt(10, 16);
+  const passwordHash = await hash(password, randomSalt);
+  return passwordHash;
 };
 
 const checkCode = async (confirmation_code) => {
