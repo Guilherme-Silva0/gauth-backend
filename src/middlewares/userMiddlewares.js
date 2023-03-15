@@ -43,7 +43,7 @@ const validateRegister = async (req, res, next) => {
 const validateCode = async (req, res, next) => {
   const isValidCode = await userModel.checkCode(req.params.confirmation_code);
   if (isValidCode.length === 0)
-    return res.status(404).json({ message: "nao emconntrado" });
+    return res.status(404).json({ error: true, message: "invalid code" });
   next();
 };
 
