@@ -8,6 +8,13 @@ routes.post(
   userMiddlewares.validateRegister,
   userController.createUser
 );
+
+routes.put(
+  "/register/:confirmation_code",
+  userMiddlewares.validateCode,
+  userController.confirmCode
+);
+
 routes.post("/login");
 
 module.exports = routes;
