@@ -2,16 +2,6 @@ const yup = require("yup");
 const userModel = require("../modules/userModel");
 
 const validateRegister = async (req, res, next) => {
-  const alreadyRegisteredUser = await userModel.getUserByEmail({
-    email: req.body.email,
-  });
-
-  if (alreadyRegisteredUser.length > 0) {
-    return res
-      .status(400)
-      .json({ error: true, message: "this email is already registered" });
-  }
-
   const schema = yup.object().shape({
     name: yup
       .string("name has to be of type string")
@@ -31,6 +21,15 @@ const validateRegister = async (req, res, next) => {
 
   try {
     await schema.validate(req.body);
+    const alreadyRegisteredUser = await userModel.getUserByEmail(
+      req.body.email
+    );
+
+    if (alreadyRegisteredUser.length > 0) {
+      return res
+        .status(400)
+        .json({ error: true, message: "this email is already registered" });
+    }
     next();
   } catch (err) {
     return res.status(400).json({
@@ -63,6 +62,17 @@ const validateLogin = async (req, res, next) => {
 
   try {
     await schema.validate(req.body);
+    const user = await userModel.getUserByEmail(req.body.email);
+    if (user.length < 1) {
+      return res
+        .status(400)
+        .json({ error: true, message: "incorrect email or password" });
+    }
+    if (user[0].status_register === "new") {
+      return res
+        .status(400)
+        .json({ error: true, message: "unconfirmed email" });
+    }
     next();
   } catch (err) {
     return res.status(400).json({
