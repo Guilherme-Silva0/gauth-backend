@@ -46,9 +46,9 @@ const confirmCode = async (confirmation_code) => {
   return resUpdate.affectedRows;
 };
 
-const getUserByEmail = async (user) => {
+const getUserByEmail = async (email) => {
   const querySelect = "SELECT * FROM users WHERE email=?";
-  const [resSelect] = await connection.query(querySelect, [user.email]);
+  const [resSelect] = await connection.query(querySelect, [email]);
   return resSelect;
 };
 
@@ -62,7 +62,6 @@ const sendEmail = async (confirmation_code, email) => {
       pass: process.env.PASS_EMAIL_HOST,
     },
   });
-
   await transport.sendMail({
     from: "Guilherme Silva <" + process.env.EMAIL_HOST + ">",
     to: email,
