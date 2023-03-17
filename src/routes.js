@@ -15,6 +15,10 @@ routes.put(
   userController.confirmCode
 );
 
-routes.post("/login", userMiddlewares.validateLogin);
+routes.post(
+  "/login",
+  userMiddlewares.validateLogin,
+  userController.authenticateUser
+);
 
 module.exports = routes;
