@@ -3,7 +3,14 @@ const userModel = require("../modules/userModel");
 
 const createUser = async (req, res) => {
   const createdUser = await userModel.createUser(req.body);
-  return res.status(201).json(createdUser);
+
+  if (createUser.insertId) {
+    return res.status(201).json(createdUser);
+  } else {
+    return res
+      .status(400)
+      .json({ error: true, message: "there was an error when creating user" });
+  }
 };
 
 const confirmCode = async (req, res) => {
