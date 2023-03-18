@@ -19,8 +19,11 @@ const createUser = async (user) => {
     status_register,
     confirmation_code,
   ]);
-  sendEmail(confirmation_code, email);
-  return { insertId: resInsert.insertId };
+
+  if (resInsert.insertId) {
+    await sendEmail(confirmCode, email);
+    return { error: false, insertId: resInsert.insertId };
+  }
 };
 
 const encryptPassword = async (password) => {
