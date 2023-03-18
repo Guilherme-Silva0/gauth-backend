@@ -10,7 +10,7 @@ routes.post(
 );
 
 routes.put(
-  "/register/:confirmation_code",
+  "/register/confirm/:confirmation_code",
   userMiddlewares.validateCode,
   userController.confirmCode
 );
