@@ -27,4 +27,10 @@ routes.put(
   userController.passwordRecovery
 );
 
+routes.put(
+  "/password_recovery/:confirmation_code",
+  userMiddlewares.validateUpdatePassword,
+  userController.updatePassword
+);
+
 module.exports = routes;
