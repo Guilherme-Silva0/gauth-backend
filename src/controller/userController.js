@@ -3,8 +3,7 @@ const userModel = require("../modules/userModel");
 
 const createUser = async (req, res) => {
   const createdUser = await userModel.createUser(req.body);
-
-  if (createUser.insertId) {
+  if (createdUser.error === false) {
     return res.status(201).json(createdUser);
   } else {
     return res
@@ -38,9 +37,22 @@ const passwordRecovery = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  const output = await userModel.updatePassword(
+    req.body.password,
+    req.params.confirmation_code
+  );
+  if (output.error === true) {
+    return res.status(400).json({ error: true, message: output.message });
+  } else {
+    return res.status(200).json(output);
+  }
+};
+
 module.exports = {
   createUser,
   confirmCode,
   authenticateUser,
   passwordRecovery,
+  updatePassword,
 };

@@ -64,6 +64,20 @@ const passwordRecovery = async (email) => {
   }
 };
 
+const updatePassword = async (password, confirmation_code) => {
+  const queryUpdate = "UPDATE users SET password=? WHERE confirmation_code=?";
+  const encryptedPassword = await encryptPassword(password);
+  const [resUpdate] = await connection.query(queryUpdate, [
+    encryptedPassword,
+    confirmation_code,
+  ]);
+  if (resUpdate.affectedRows > 0) {
+    return { error: false, affectedRows: resUpdate.affectedRows };
+  } else {
+    return { error: true, message: "error updating user password" };
+  }
+};
+
 const getUserByEmail = async (email) => {
   const querySelect = "SELECT * FROM users WHERE email=?";
   const [resSelect] = await connection.query(querySelect, [email]);
@@ -120,4 +134,5 @@ module.exports = {
   checkCode,
   confirmCode,
   passwordRecovery,
+  updatePassword,
 };
