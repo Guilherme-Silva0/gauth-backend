@@ -82,8 +82,46 @@ const validateLogin = async (req, res, next) => {
   }
 };
 
+const validatePasswordRecovery = async (req, res, next) => {
+  if (req.body.email) {
+    const schema = yup.object().shape({
+      email: yup
+        .string("email has to be of type string")
+        .email("email invalid")
+        .required("email is required!")
+        .trim(),
+    });
+
+    try {
+      await schema.validate(req.body);
+      const user = await userModel.getUserByEmail(req.body.email);
+      if (user.length < 1) {
+        return res
+          .status(400)
+          .json({ error: true, message: "email not registered" });
+      }
+      if (user[0].status_register === "new") {
+        return res
+          .status(400)
+          .json({ error: true, message: "unconfirmed email" });
+      }
+      next();
+    } catch (err) {
+      return res.status(400).json({
+        error: true,
+        message: err.errors,
+      });
+    }
+  }
+
+  if (req.body.password) {
+    console.log("senha");
+  }
+};
+
 module.exports = {
   validateRegister,
   validateCode,
   validateLogin,
+  validatePasswordRecovery,
 };
