@@ -29,8 +29,18 @@ const authenticateUser = async (req, res) => {
   res.status(200).send({ error: false, message: "successful login" });
 };
 
+const passwordRecovery = async (req, res) => {
+  const output = await userModel.passwordRecovery(req.body.email);
+  if (output.error === true) {
+    return res.status(400).json({ error: true, message: output.message });
+  } else {
+    return res.status(200).json(output);
+  }
+};
+
 module.exports = {
   createUser,
   confirmCode,
   authenticateUser,
+  passwordRecovery,
 };

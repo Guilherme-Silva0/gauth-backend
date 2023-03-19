@@ -21,7 +21,7 @@ const createUser = async (user) => {
   ]);
 
   if (resInsert.insertId) {
-    await sendEmail(confirmCode, email);
+    await sendEmailConfirm(confirmCode, email);
     return { error: false, insertId: resInsert.insertId };
   }
 };
@@ -49,13 +49,28 @@ const confirmCode = async (confirmation_code) => {
   return resUpdate.affectedRows;
 };
 
+const passwordRecovery = async (email) => {
+  const confirmation_code = uuidv4();
+  const queryUpdate = "UPDATE users SET confirmation_code=? WHERE email=?";
+  const [resUpdate] = await connection.query(queryUpdate, [
+    confirmation_code,
+    email,
+  ]);
+  if (resUpdate.affectedRows > 0) {
+    await sendEmailRecovery(confirmation_code, email);
+    return { error: false, affectedRows: resUpdate.affectedRows };
+  } else {
+    return { error: true, message: "error updating user code" };
+  }
+};
+
 const getUserByEmail = async (email) => {
   const querySelect = "SELECT * FROM users WHERE email=?";
   const [resSelect] = await connection.query(querySelect, [email]);
   return resSelect;
 };
 
-const sendEmail = async (confirmation_code, email) => {
+const sendEmailConfirm = async (confirmation_code, email) => {
   const transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -77,9 +92,32 @@ const sendEmail = async (confirmation_code, email) => {
   });
 };
 
+const sendEmailRecovery = async (confirmation_code, email) => {
+  const transport = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_HOST,
+      pass: process.env.PASS_EMAIL_HOST,
+    },
+  });
+  await transport.sendMail({
+    from: "Guilherme Silva <" + process.env.EMAIL_HOST + ">",
+    to: email,
+    subject: "E-mail de recuperação de senha",
+    html: `<body style="text-align:center;">
+      <h1>E-mail de recuperação de senha</h1>
+      <h2>Clique no link abaixo para alterar sua senha:</h2><br><br>
+      <a style="background-color: #00c3ff; color: white; text-decoration: none; padding: 20px; border-radius:5px; box-shadow: 0px 0px 10px #bebebe; font-weight: bold; font-size: 20px;" href="http://localhost:5173/password_recovery/${confirmation_code}">Recuperar senha</a></body>`,
+    text: "Seu serviço de e-mail não suporta html :(",
+  });
+};
+
 module.exports = {
   createUser,
   getUserByEmail,
   checkCode,
   confirmCode,
+  passwordRecovery,
 };
