@@ -21,4 +21,10 @@ routes.post(
   userController.authenticateUser
 );
 
+routes.put(
+  "/password_recovery",
+  userMiddlewares.validatePasswordRecovery,
+  userController.passwordRecovery
+);
+
 module.exports = routes;
