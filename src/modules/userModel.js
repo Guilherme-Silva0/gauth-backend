@@ -21,7 +21,7 @@ const createUser = async (user) => {
   ]);
 
   if (resInsert.insertId) {
-    await sendEmailConfirm(confirmCode, email);
+    await sendEmailConfirm(confirmation_code, email);
     return { error: false, insertId: resInsert.insertId };
   }
 };
