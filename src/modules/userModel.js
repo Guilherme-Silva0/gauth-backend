@@ -46,7 +46,8 @@ const confirmCode = async (confirmation_code) => {
     status,
     confirmation_code,
   ]);
-  return resUpdate.affectedRows;
+  const [user] = await checkCode(confirmation_code);
+  return { affectedRows: resUpdate.affectedRows, user };
 };
 
 const passwordRecovery = async (email) => {

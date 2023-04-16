@@ -14,7 +14,11 @@ const createUser = async (req, res) => {
 
 const confirmCode = async (req, res) => {
   const output = await userModel.confirmCode(req.params.confirmation_code);
-  return res.status(200).json({ error: false, affectedRows: output });
+  return res.status(200).json({
+    error: false,
+    affectedRows: output.affectedRows,
+    user: { name: output.user.name, email: output.user.email },
+  });
 };
 
 const authenticateUser = async (req, res) => {
