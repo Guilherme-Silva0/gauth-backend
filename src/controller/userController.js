@@ -17,7 +17,11 @@ const confirmCode = async (req, res) => {
   return res.status(200).json({
     error: false,
     affectedRows: output.affectedRows,
-    user: { name: output.user.name, email: output.user.email },
+    user: {
+      id: output.user.id,
+      name: output.user.name,
+      email: output.user.email,
+    },
   });
 };
 
@@ -29,7 +33,10 @@ const authenticateUser = async (req, res) => {
       .status(400)
       .json({ error: true, message: "incorrect email or password" });
   }
-  res.status(200).send({ error: false, message: "successful login" });
+  res.status(200).send({
+    error: false,
+    user: { id: user[0].id, name: user[0].name, email: user[0].email },
+  });
 };
 
 const passwordRecovery = async (req, res) => {
