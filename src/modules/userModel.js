@@ -102,7 +102,7 @@ const sendEmailConfirm = async (confirmation_code, email) => {
     html: `<body style="text-align:center;">
       <h1>E-mail de confirmação</h1>
       <h2>Por favor confirme seu e-mail clicando no link abaixo:</h2><br><br>
-      <a style="background-color: #00c3ff; color: white; text-decoration: none; padding: 20px; border-radius:5px; box-shadow: 0px 0px 10px #bebebe; font-weight: bold; font-size: 20px;" href="http://localhost:5173/confirm/${confirmation_code}">Confirmar E-mail</a></body>`,
+      <a style="background-color: #00c3ff; color: white; text-decoration: none; padding: 20px; border-radius:5px; box-shadow: 0px 0px 10px #bebebe; font-weight: bold; font-size: 20px;" href="${process.env.CLIENT_URL}/confirm/${confirmation_code}">Confirmar E-mail</a></body>`,
     text: "Seu serviço de e-mail não suporta html :(",
   });
 };
@@ -124,7 +124,7 @@ const sendEmailRecovery = async (confirmation_code, email) => {
     html: `<body style="text-align:center;">
       <h1>E-mail de recuperação de senha</h1>
       <h2>Clique no link abaixo para alterar sua senha:</h2><br><br>
-      <a style="background-color: #00c3ff; color: white; text-decoration: none; padding: 20px; border-radius:5px; box-shadow: 0px 0px 10px #bebebe; font-weight: bold; font-size: 20px;" href="http://localhost:5173/password_recovery/${confirmation_code}">Recuperar senha</a></body>`,
+      <a style="background-color: #00c3ff; color: white; text-decoration: none; padding: 20px; border-radius:5px; box-shadow: 0px 0px 10px #bebebe; font-weight: bold; font-size: 20px;" href="${process.env.CLIENT_URL}/password_recovery/${confirmation_code}">Recuperar senha</a></body>`,
     text: "Seu serviço de e-mail não suporta html :(",
   });
 };
