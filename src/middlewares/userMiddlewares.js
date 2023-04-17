@@ -55,7 +55,6 @@ const validateLogin = async (req, res, next) => {
       .trim(),
     password: yup
       .string("password has to be of type string")
-      .min(6, "the password must have at least 6 characters")
       .required("password is required!")
       .trim(),
   });
