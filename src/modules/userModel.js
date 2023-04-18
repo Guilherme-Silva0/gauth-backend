@@ -47,7 +47,7 @@ const confirmCode = async (confirmation_code) => {
     confirmation_code,
   ]);
   const [user] = await checkCode(confirmation_code);
-  return { affectedRows: resUpdate.affectedRows, user };
+  return { affectedRows: resUpdate.affectedRows, id: user.id };
 };
 
 const passwordRecovery = async (email) => {
@@ -82,6 +82,12 @@ const updatePassword = async (password, confirmation_code) => {
 const getUserByEmail = async (email) => {
   const querySelect = "SELECT * FROM users WHERE email=?";
   const [resSelect] = await connection.query(querySelect, [email]);
+  return resSelect;
+};
+
+const getUserById = async (id) => {
+  const querySelect = "SELECT * FROM users WHERE id=?";
+  const [resSelect] = await connection.query(querySelect, [id]);
   return resSelect;
 };
 
@@ -134,6 +140,7 @@ module.exports = {
   getUserByEmail,
   checkCode,
   confirmCode,
+  getUserById,
   passwordRecovery,
   updatePassword,
 };
