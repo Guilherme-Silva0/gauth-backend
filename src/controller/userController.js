@@ -15,19 +15,14 @@ const createUser = async (req, res) => {
 
 const confirmCode = async (req, res) => {
   const output = await userModel.confirmCode(req.params.confirmation_code);
-
-  const token = jwt.sign({ userId: output.user.id }, process.env.SECRET_KEY, {
+  console.log(output.id);
+  const token = jwt.sign({ userId: output.id }, process.env.SECRET_KEY, {
     expiresIn: "1h",
   });
 
   return res.status(200).json({
     error: false,
     affectedRows: output.affectedRows,
-    user: {
-      id: output.user.id,
-      name: output.user.name,
-      email: output.user.email,
-    },
     token,
   });
 };
@@ -47,9 +42,22 @@ const authenticateUser = async (req, res) => {
 
   res.status(200).send({
     error: false,
-    user: { id: user[0].id, name: user[0].name, email: user[0].email },
     token,
   });
+};
+
+const getUserById = async (req, res) => {
+  const output = await userModel.getUserById(req.body.id);
+  if (!output) {
+    return res.status(400).json({ error: true, message: "please login first" });
+  } else {
+    return res
+      .status(200)
+      .json({
+        error: false,
+        user: { name: output[0].name, email: output[0].email },
+      });
+  }
 };
 
 const passwordRecovery = async (req, res) => {
@@ -77,6 +85,7 @@ module.exports = {
   createUser,
   confirmCode,
   authenticateUser,
+  getUserById,
   passwordRecovery,
   updatePassword,
 };
