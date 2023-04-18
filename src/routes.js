@@ -3,6 +3,8 @@ const routes = express.Router();
 const userMiddlewares = require("./middlewares/userMiddlewares");
 const userController = require("./controller/userController");
 
+routes.get("/", userMiddlewares.validateToken, userController.getUserById);
+
 routes.post(
   "/register",
   userMiddlewares.validateRegister,
