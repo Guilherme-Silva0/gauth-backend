@@ -15,7 +15,6 @@ const createUser = async (req, res) => {
 
 const confirmCode = async (req, res) => {
   const output = await userModel.confirmCode(req.params.confirmation_code);
-  console.log(output.id);
   const token = jwt.sign({ userId: output.id }, process.env.SECRET_KEY, {
     expiresIn: "1h",
   });
@@ -51,12 +50,10 @@ const getUserById = async (req, res) => {
   if (!output) {
     return res.status(400).json({ error: true, message: "please login first" });
   } else {
-    return res
-      .status(200)
-      .json({
-        error: false,
-        user: { name: output[0].name, email: output[0].email },
-      });
+    return res.status(200).json({
+      error: false,
+      user: { name: output[0].name, email: output[0].email },
+    });
   }
 };
 
