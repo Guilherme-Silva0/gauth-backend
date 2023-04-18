@@ -1,4 +1,5 @@
 const yup = require("yup");
+const jwt = require("jsonwebtoken");
 const userModel = require("../modules/userModel");
 
 const validateRegister = async (req, res, next) => {
@@ -81,6 +82,28 @@ const validateLogin = async (req, res, next) => {
   }
 };
 
+const validateToken = async (req, res, next) => {
+  const authToken = req.headers.authorization;
+  if (!authToken) {
+    return res.status(400).json({
+      error: true,
+      message: "please login first",
+    });
+  }
+
+  const token = authToken.split(" ")[1];
+  try {
+    const { userId } = jwt.verify(token, process.env.SECRET_KEY);
+    req.body.id = userId;
+    next();
+  } catch (err) {
+    return res.status(400).json({
+      error: true,
+      message: "please login first",
+    });
+  }
+};
+
 const validatePasswordRecovery = async (req, res, next) => {
   const schema = yup.object().shape({
     email: yup
@@ -140,6 +163,7 @@ module.exports = {
   validateRegister,
   validateCode,
   validateLogin,
+  validateToken,
   validatePasswordRecovery,
   validateUpdatePassword,
 };
