@@ -47,7 +47,7 @@ const authenticateUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
   const output = await userModel.getUserById(req.body.id);
-  if (!output) {
+  if (output.length === 0) {
     return res.status(400).json({ error: true, message: "please login first" });
   } else {
     return res.status(200).json({
