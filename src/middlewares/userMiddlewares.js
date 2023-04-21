@@ -15,8 +15,12 @@ const validateRegister = async (req, res, next) => {
       .trim(),
     password: yup
       .string("password has to be of type string")
-      .min(6, "the password must have at least 6 characters")
+      .min(8, "the password must have at least 8 characters")
       .required("password is required!")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!-@#$%^&*()_+=[\]{}|\\,./<>?;:'"`~])/,
+        "Password must include at least one uppercase letter, one lowercase letter, one number and one special character"
+      )
       .trim(),
   });
 
