@@ -47,7 +47,19 @@ const confirmCode = async (confirmation_code) => {
     confirmation_code,
   ]);
   const [user] = await checkCode(confirmation_code);
-  return { affectedRows: resUpdate.affectedRows, id: user.id };
+
+  const new_confirmation_code = uuidv4();
+  const queryUpdate2 =
+    "UPDATE users SET confirmation_code=? WHERE confirmation_code=?";
+  const [resUpdate2] = await connection.query(queryUpdate2, [
+    new_confirmation_code,
+    confirmation_code,
+  ]);
+  if (resUpdate2.affectedRows > 0) {
+    return { affectedRows: resUpdate2.affectedRows, id: user.id };
+  } else {
+    return { error: true, message: "error updating user password" };
+  }
 };
 
 const passwordRecovery = async (email) => {
@@ -73,7 +85,18 @@ const updatePassword = async (password, confirmation_code) => {
     confirmation_code,
   ]);
   if (resUpdate.affectedRows > 0) {
-    return { error: false, affectedRows: resUpdate.affectedRows };
+    const new_confirmation_code = uuidv4();
+    const queryUpdate2 =
+      "UPDATE users SET confirmation_code=? WHERE confirmation_code=?";
+    const [resUpdate2] = await connection.query(queryUpdate2, [
+      new_confirmation_code,
+      confirmation_code,
+    ]);
+    if (resUpdate2.affectedRows > 0) {
+      return { error: false, affectedRows: resUpdate.affectedRows };
+    } else {
+      return { error: true, message: "error updating user password" };
+    }
   } else {
     return { error: true, message: "error updating user password" };
   }
